@@ -1,66 +1,68 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Context from "./context/index";
-import ExtractingComponent from "./extracting-component/index";
-import IsolatingComponents from "./isolating-components/index";
-import KeyProp from "./key-prop/index";
-import UseEffect from "./use-effect/index";
-import UseState from "./use-state/index";
-// import UseRefUseCallback from "./useref-usecallback";
+import React, { useContext} from 'react'
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom'
+import ReactDOM from 'react-dom'
+import Clock from './Clock'
+import Toggle from './Toggle'
+import LoginControl, { Greeting, Mailbox, Page } from './LoginControl'
+import RefactoredNumberList from './RefactoredNumberList'
+import NameForm from './NameForm'
+import InputRef from './InputRef'
+import LoginContext, { LoginContextProvider } from './LoginContext'
+import UserForm from './UserForm'
+import Effect from './Effect'
 
 const linkStyle = {
-  display: "inline-block",
-  padding: "10px",
-  margin: "5px",
-  backgroundColor: "#ddd",
-  borderRadius: "5px",
-};
+  display: 'inline-block',
+  padding: '10px',
+  margin: '5px',
+  backgroundColor: '#DDD',
+  borderRadius: '5px',
+}
 
-const courses = [
-  { name: 'Extracting component', path: '/extracting-component', component: <ExtractingComponent /> },
-  { name: 'useState()', path: '/use-state', component: <UseState /> },
-  { name: 'useEffect()', path: '/use-effect', component: <UseEffect /> },
-  { name: 'Isolating components', path: '/isolating-components', component: <IsolatingComponents /> },
-  { name: 'key prop', path: '/key-prop', component: <KeyProp /> },
-  { name: 'Context', path: '/context', component: <Context /> },
-  // { name: 'Memo() and UseCallBack()', path: '/memo-and-use-callback', component: <MemoAndUseCallback /> },
-  // { name: 'useRef() and useCallback()', path: '/useref-and-usecallback', component: <UseRefUseCallback /> },
-]
+const AppWithProvider = () => (
+  <LoginContextProvider>
+    <App/>
+  </LoginContextProvider>
+)
 
-const Links = () => courses.map(({ name, path }) => <Link key={name} style={linkStyle} to={path}>{name}</Link>)
-const Routes = () => courses.map(({ path, component }) => <Route key={path} path={path}> {component} </Route>)
 
-const App = () => (
-  <Router>
-    <Links />
-    <Switch>
-      <Routes />
-    </Switch>
-  </Router>
-);
+const App = () => {
 
-ReactDOM.render(<App />, document.getElementById("root"));
+  const unreadMessages = ['React', 'Re: React', 'Re:Re: React', 'Hello!'];
+  const numbers = [1, 2, 3, 4, 5];
+  
+  return(
+    <BrowserRouter>
+      <Link to="/" style={linkStyle}>Home</Link>
+      <Link to="/login-control" style={linkStyle}>Login Control</Link>
+      <Link to="/clock" style={linkStyle}>Clock</Link>
+      <Link to="/toggle" style={linkStyle}>Toggle</Link>
+      <Link to="/number-list" style={linkStyle}>Number List</Link>
+      <Link to="/form" style={linkStyle}>Form</Link>
+      <Link to="/page" style={linkStyle}>Page</Link>
+      <Link to="/mailbox" style={linkStyle}>Mailbox</Link>
+      <Link to="/input-ref" style={linkStyle}>Input Ref</Link>
+      <Link to="/user-form" style={linkStyle}>User Form</Link>
+      <Link to="/effect" style={linkStyle}>Effect</Link>
 
-// const courses = [
-//   { name: 'Extracting component', path: '/extracting-component', component: <ExtractingComponent /> },
-//   { name: 'useState()', path: '/use-state', component: <UseState /> },
-//   { name: 'useEffect()', path: '/use-effect', component: <UseEffect /> },
-//   { name: 'Isolating components', path: '/isolating-components', component: <IsolatingComponents /> },
-//   { name: 'key prop', path: '/key-prop', component: <KeyProp /> },
-//   { name: 'Context', path: '/context', component: <Context /> },
-//   // { name: 'Memo() and UseCallBack()', path: '/memo-and-use-callback', component: <MemoAndUseCallback /> },
-//   // { name: 'useRef() and useCallback()', path: '/useref-and-usecallback', component: <UseRefUseCallback /> },
-// ]
-// const App = () => (
-//   <Router>
-//     <nav>
-//       { courses.map(({ name, path }) => <Link key={name} style={linkStyle} to={path}>{name}</Link>) }
-//     </nav>
-//     <Switch>
-//       { courses.map(({path, component}) => <Route key={path} path={path}> {component} </Route>) }
-//     </Switch>
-//   </Router>
-// );
+      <Switch>
+        <Route path="/login-control" render={()=> <LoginControl />} />
+        <Route path="/clock" render={()=> <Clock />} />
+        <Route path="/toggle" render={()=> <Toggle />} />
+        <Route path="/number-list" render={()=> <RefactoredNumberList numbers={numbers} />} />
+        <Route path="/form" render={()=> <NameForm />} />
+        <Route path="/page" render={()=> <Page />} />
+        <Route path="/mailbox" render={()=> <Mailbox unreadMessages={unreadMessages} /> } />
+        <Route path="/input-ref" render={()=> <InputRef /> } />
+        <Route path="/user-form" render={()=> <UserForm /> } />
+        <Route path="/effect" render={()=> <Effect /> } />
 
-// ReactDOM.render(<App />, document.getElementById("root"));
+        <Route path="/" render={()=> <Greeting />} />
+      </Switch>
+    </BrowserRouter>  
+ 
+  );
+}
+
+ReactDOM.render(<AppWithProvider />, document.getElementById("root"));
+
